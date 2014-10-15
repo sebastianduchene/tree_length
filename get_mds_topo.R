@@ -66,6 +66,6 @@ dev.off()
 
 
 
-write.table(t(t(clu1$clustering)), file = 'clust_k_5.txt', row.names = T)
-write.table(clu1$clusinfo, file = 'clust_info_k_5.txt', row.names = F)
+write.table(t(t(clu1$clustering)), file = 'clust_k_10.txt', row.names = T)
+write.table(clu1$clusinfo, file = 'clust_info_k_10.txt', row.names = F)
 

@@ -9,15 +9,19 @@ dat_raw[1:ncol(dat_raw), 1:nrow(dat_raw)] <- as.numeric(dat_raw)
 
 dat_dist <- as.dist(dat_raw)
 
+
 mds_dat <- cmdscale(dat_dist, k = 2)
 
-write.table(mds_dat, file = 'mds_topo.txt', row.names = T)
+rm(list = c('dat_raw', 'dat_dist'))
 
+
+write.table(mds_dat, file = 'mds_topo.txt', row.names = T)
 
 ### functions
 
 clus_fun <- function(x, kmax) sapply(2:(kmax), function(i) clara(x, k = i)$silinfo$avg.width )
 clus_fun_par <- function(x, kmax) foreach(i = 2:(kmax), .combine = cbind) %dopar% cluster::clara(x, k = i)$silinfo$avg.width
+
 
 get_boot_rep <- function(x){
   boot_mat <- cbind(runif(nrow(x), min(x[, 1]), max(x[, 1])), runif(nrow(x), min(x[, 2]), max(x[, 2])))
@@ -46,19 +50,19 @@ stopCluster(cl)
 
 }
 
-#pdf('topo_clusters.pdf')
+pdf('topo_clusters.pdf')
 par(mfrow = c(2, 1))
-plot(2:50, as.numeric(true_dat_clus), type = 'l', lwd = 2, col = 'red', ylim = c(0.3, 1), ylab = 'Average silhouette width', xlab = 'Number of topology clusters')
+plot(2:50, as.numeric(true_dat_clus), type = 'l', lwd = 2, col = 'red', ylim = c(0.3, 0.6), ylab = 'Average silhouette width', xlab = 'Number of topology clusters')
 for(i in 1:length(boot_dat_clus)){
-      points(jitter(2:50), as.numeric(boot_dat_clus[[i]]), pch = 20, col = rgb(0, 0, 0.5, 0.2))
+      points(jitter(2:50), as.numeric(boot_dat_clus[[i]]), pch = 20, col = 'blue')
 
 }
 
-clu1 <- pam(mds_dat, k = 5)
+clu1 <- pam(mds_dat, k = 10)
 
-plot(mds_dat, pch = 20, col = clu1$clustering, xlab = 'MDS 1', ylab = 'MDS 2')
+plot(mds_dat, pch = 20, col = rainbow(10)[clu1$clustering], xlab = 'MDS 1', ylab = 'MDS 2')
 
-#dev.off()
+dev.off()
 
 
 
